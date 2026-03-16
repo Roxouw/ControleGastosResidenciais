@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Domain/GastosResidenciais.Domain.csproj",
+      "projectUniqueName": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Domain/GastosResidenciais.Domain.csproj",
       "projectName": "GastosResidenciais.Domain",
-      "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Domain/GastosResidenciais.Domain.csproj",
+      "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Domain/GastosResidenciais.Domain.csproj",
       "packagesPath": "/Users/filiperosso/.nuget/packages/",
-      "outputPath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Domain/obj/",
+      "outputPath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Domain/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/filiperosso/.nuget/NuGet/NuGet.Config"

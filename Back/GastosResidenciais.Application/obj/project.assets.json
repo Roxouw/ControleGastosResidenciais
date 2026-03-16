@@ -32,11 +32,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Application/GastosResidenciais.Application.csproj",
+      "projectUniqueName": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Application/GastosResidenciais.Application.csproj",
       "projectName": "GastosResidenciais.Application",
-      "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Application/GastosResidenciais.Application.csproj",
+      "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Application/GastosResidenciais.Application.csproj",
       "packagesPath": "/Users/filiperosso/.nuget/packages/",
-      "outputPath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Application/obj/",
+      "outputPath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Application/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/filiperosso/.nuget/NuGet/NuGet.Config"
@@ -51,8 +51,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Domain/GastosResidenciais.Domain.csproj": {
-              "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Domain/GastosResidenciais.Domain.csproj"
+            "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Domain/GastosResidenciais.Domain.csproj": {
+              "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Domain/GastosResidenciais.Domain.csproj"
             }
           }
         }

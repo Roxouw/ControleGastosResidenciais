@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jJPmDMTyGbI=",
+  "dgSpecHash": "Sp+EC1rsWN8=",
   "success": true,
-  "projectFilePath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.API/GastosResidenciais.API.csproj",
+  "projectFilePath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.API/GastosResidenciais.API.csproj",
   "expectedPackageFiles": [
     "/Users/filiperosso/.nuget/packages/fluentvalidation/11.5.1/fluentvalidation.11.5.1.nupkg.sha512",
     "/Users/filiperosso/.nuget/packages/fluentvalidation.aspnetcore/11.3.0/fluentvalidation.aspnetcore.11.3.0.nupkg.sha512",

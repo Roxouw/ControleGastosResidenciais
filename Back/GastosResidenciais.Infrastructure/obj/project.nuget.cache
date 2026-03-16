@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "kZPBo0DEmog=",
+  "dgSpecHash": "2rPZ+Xjp4SE=",
   "success": true,
-  "projectFilePath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Infrastructure/GastosResidenciais.Infrastructure.csproj",
+  "projectFilePath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Infrastructure/GastosResidenciais.Infrastructure.csproj",
   "expectedPackageFiles": [
     "/Users/filiperosso/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/filiperosso/.nuget/packages/microsoft.bcl.asyncinterfaces/6.0.0/microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",

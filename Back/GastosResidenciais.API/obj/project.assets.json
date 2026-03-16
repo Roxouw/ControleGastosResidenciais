@@ -3153,11 +3153,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.API/GastosResidenciais.API.csproj",
+      "projectUniqueName": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.API/GastosResidenciais.API.csproj",
       "projectName": "GastosResidenciais.API",
-      "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.API/GastosResidenciais.API.csproj",
+      "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.API/GastosResidenciais.API.csproj",
       "packagesPath": "/Users/filiperosso/.nuget/packages/",
-      "outputPath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.API/obj/",
+      "outputPath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/filiperosso/.nuget/NuGet/NuGet.Config"
@@ -3172,11 +3172,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Application/GastosResidenciais.Application.csproj": {
-              "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Application/GastosResidenciais.Application.csproj"
+            "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Application/GastosResidenciais.Application.csproj": {
+              "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Application/GastosResidenciais.Application.csproj"
             },
-            "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Infrastructure/GastosResidenciais.Infrastructure.csproj": {
-              "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Infrastructure/GastosResidenciais.Infrastructure.csproj"
+            "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Infrastructure/GastosResidenciais.Infrastructure.csproj": {
+              "projectPath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Infrastructure/GastosResidenciais.Infrastructure.csproj"
             }
           }
         }

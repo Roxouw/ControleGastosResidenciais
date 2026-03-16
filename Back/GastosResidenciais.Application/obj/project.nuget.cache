@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HAn6+ufVQeM=",
+  "dgSpecHash": "LVPQt9ZMsSo=",
   "success": true,
-  "projectFilePath": "/Users/filiperosso/Documents/ControleGastosResidenciais - Claude/Back/GastosResidenciais.Application/GastosResidenciais.Application.csproj",
+  "projectFilePath": "/Users/filiperosso/Documents/ControleGastosResidenciais/Back/GastosResidenciais.Application/GastosResidenciais.Application.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
