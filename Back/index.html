@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitetura — Controle de Gastos Residenciais</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #252a38;
+    --accent-blue: #4f9cf9;
+    --accent-green: #3ecf8e;
+    --accent-orange: #f97316;
+    --accent-purple: #a78bfa;
+    --accent-red: #f87171;
+    --accent-yellow: #fbbf24;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 48px 32px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .header .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--accent-blue);
+    border: 1px solid var(--accent-blue);
+    padding: 4px 14px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .header h1 {
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    color: #fff;
+  }
+  .header h1 span { color: var(--accent-blue); }
+  .header p {
+    margin-top: 12px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+
+  /* ── GRID LAYOUT ── */
+  .grid-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 1300px;
+    margin: 0 auto 20px;
+  }
+  .grid-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    max-width: 1300px;
+    margin: 0 auto 20px;
+  }
+  .grid-full {
+    max-width: 1300px;
+    margin: 0 auto 20px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-header .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .card-header h2 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .card-header .badge {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    background: var(--surface2);
+    color: var(--text-muted);
+  }
+  .card-body { padding: 20px; }
+
+  /* ── TREE ── */
+  .tree { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.9; }
+  .tree .folder { color: var(--accent-yellow); font-weight: 600; }
+  .tree .file   { color: var(--text-dim); }
+  .tree .file.blue   { color: var(--accent-blue); }
+  .tree .file.green  { color: var(--accent-green); }
+  .tree .file.orange { color: var(--accent-orange); }
+  .tree .file.purple { color: var(--accent-purple); }
+  .tree .file.red    { color: var(--accent-red); }
+  .tree .indent { color: var(--border); }
+  .tree .comment { color: var(--text-muted); font-size: 11px; padding-left: 8px; }
+
+  /* ── FLOW ── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .flow-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .flow-arrow {
+    color: var(--text-muted);
+    font-size: 16px;
+    padding: 0 6px;
+  }
+
+  /* ── RULE TABLE ── */
+  .rule-list { display: flex; flex-direction: column; gap: 10px; }
+  .rule-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    background: var(--surface2);
+    border-radius: 4px;
+    border-left: 3px solid var(--border);
+  }
+  .rule-item.warn  { border-left-color: var(--accent-orange); }
+  .rule-item.info  { border-left-color: var(--accent-blue); }
+  .rule-item.error { border-left-color: var(--accent-red); }
+  .rule-item.ok    { border-left-color: var(--accent-green); }
+  .rule-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .rule-text { font-size: 12.5px; line-height: 1.6; color: var(--text-dim); }
+  .rule-text strong { color: var(--text); }
+
+  /* ── ENDPOINT TABLE ── */
+  .endpoint-table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+  .endpoint-table th {
+    text-align: left; padding: 8px 12px;
+    color: var(--text-muted); font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .endpoint-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--text-dim); vertical-align: top; }
+  .endpoint-table tr:last-child td { border-bottom: none; }
+  .method {
+    display: inline-block; padding: 2px 7px; border-radius: 3px;
+    font-weight: 700; font-size: 10px; letter-spacing: .5px;
+  }
+  .method.get    { background: #0c3a2a; color: var(--accent-green); }
+  .method.post   { background: #1a2f4a; color: var(--accent-blue); }
+  .method.put    { background: #2e2010; color: var(--accent-orange); }
+  .method.delete { background: #2e1010; color: var(--accent-red); }
+
+  /* ── TECH PILLS ── */
+  .tech-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tech-pill {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 13px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tech-pill .icon { font-size: 16px; }
+  .tech-pill .name { color: var(--text); font-weight: 600; }
+  .tech-pill .ver  { color: var(--text-muted); font-size: 10px; }
+
+  /* ── DIVIDER ── */
+  .section-label {
+    max-width: 1300px; margin: 32px auto 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ── COMM FLOW ── */
+  .comm-flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 8px;
+  }
+  .comm-layer {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+  }
+  .comm-layer .layer-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .comm-layer .layer-items { display: flex; flex-direction: column; gap: 4px; }
+  .comm-layer .layer-item {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--text-dim); padding: 3px 0;
+  }
+  .comm-connector {
+    display: flex; align-items: center; padding: 0 4px;
+    color: var(--text-muted); font-size: 18px;
+  }
+
+  /* ── ENTITY ── */
+  .entity-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .entity-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .entity-title {
+    padding: 8px 12px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .entity-fields { padding: 10px 12px; display: flex; flex-direction: column; gap: 5px; }
+  .entity-field {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  }
+  .entity-field .fname { color: var(--text-dim); }
+  .entity-field .ftype { color: var(--text-muted); font-size: 10px; }
+  .entity-field.pk .fname { color: var(--accent-yellow); }
+  .entity-field.fk .fname { color: var(--accent-purple); }
+
+  @media (max-width: 900px) {
+    .grid-main, .grid-bottom { grid-template-columns: 1fr; }
+    .entity-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="tag">Teste Técnico</div>
+  <h1>Controle de <span>Gastos Residenciais</span></h1>
+  <p>C# .NET 8 WebAPI &nbsp;/&nbsp; React + TypeScript &nbsp;/&nbsp; SQLite + EF Core</p>
+</div>
+
+<!-- STACK DE TECNOLOGIAS -->
+<div class="section-label"><span>Stack de Tecnologias</span></div>
+<div class="grid-full">
+  <div class="card">
+    <div class="card-header">
+      <div class="dot" style="background:var(--accent-blue)"></div>
+      <h2>Tecnologias Utilizadas</h2>
+    </div>
+    <div class="card-body">
+      <div class="tech-grid">
+        <div class="tech-pill"><span class="icon">⚙️</span><span class="name">.NET 8</span><span class="ver">WebAPI</span></div>
+        <div class="tech-pill"><span class="icon">🔷</span><span class="name">C#</span><span class="ver">12</span></div>
+        <div class="tech-pill"><span class="icon">🗄️</span><span class="name">Entity Framework Core</span><span class="ver">8.x ORM</span></div>
+        <div class="tech-pill"><span class="icon">🪶</span><span class="name">SQLite</span><span class="ver">persistência local</span></div>
+        <div class="tech-pill"><span class="icon">⚛️</span><span class="name">React</span><span class="ver">18</span></div>
+        <div class="tech-pill"><span class="icon">🟦</span><span class="name">TypeScript</span><span class="ver">5.x</span></div>
+        <div class="tech-pill"><span class="icon">⚡</span><span class="name">Vite</span><span class="ver">bundler</span></div>
+        <div class="tech-pill"><span class="icon">🎨</span><span class="name">Tailwind CSS</span><span class="ver">estilização</span></div>
+        <div class="tech-pill"><span class="icon">🔗</span><span class="name">Axios</span><span class="ver">HTTP client</span></div>
+        <div class="tech-pill"><span class="icon">📋</span><span class="name">React Hook Form</span><span class="ver">formulários</span></div>
+        <div class="tech-pill"><span class="icon">🔍</span><span class="name">Swagger / OpenAPI</span><span class="ver">documentação API</span></div>
+        <div class="tech-pill"><span class="icon">🛡️</span><span class="name">FluentValidation</span><span class="ver">validações</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLUXO DE COMUNICAÇÃO -->
+<div class="section-label"><span>Fluxo de Comunicação</span></div>
+<div class="grid-full">
+  <div class="card">
+    <div class="card-header">
+      <div class="dot" style="background:var(--accent-purple)"></div>
+      <h2>Camadas da Aplicação</h2>
+    </div>
+    <div class="card-body">
+      <div class="comm-flow">
+        <div class="comm-layer" style="border-color: #4f9cf930">
+          <div class="layer-title" style="color:var(--accent-blue)">🖥️ Front-end</div>
+          <div class="layer-items">
+            <div class="layer-item">React + TypeScript</div>
+            <div class="layer-item">Vite (porta 5173)</div>
+            <div class="layer-item">Páginas / Componentes</div>
+            <div class="layer-item">services/ (Axios)</div>
+            <div class="layer-item">types/ (interfaces TS)</div>
+          </div>
+        </div>
+        <div class="comm-connector">→<br><span style="font-size:10px;font-family:monospace;color:var(--accent-green)">HTTP/JSON<br>REST</span><br>→</div>
+        <div class="comm-layer" style="border-color: #3ecf8e30">
+          <div class="layer-title" style="color:var(--accent-green)">⚙️ WebAPI</div>
+          <div class="layer-items">
+            <div class="layer-item">ASP.NET Core</div>
+            <div class="layer-item">.NET 8 (porta 5000)</div>
+            <div class="layer-item">Controllers</div>
+            <div class="layer-item">Services (regras)</div>
+            <div class="layer-item">DTOs / Validators</div>
+          </div>
+        </div>
+        <div class="comm-connector">→<br><span style="font-size:10px;font-family:monospace;color:var(--accent-purple)">EF Core<br>LINQ</span><br>→</div>
+        <div class="comm-layer" style="border-color: #a78bfa30">
+          <div class="layer-title" style="color:var(--accent-purple)">🗄️ Banco de Dados</div>
+          <div class="layer-items">
+            <div class="layer-item">SQLite</div>
+            <div class="layer-item">arquivo .db local</div>
+            <div class="layer-item">Migrations (EF)</div>
+            <div class="layer-item">Cascade Delete</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ESTRUTURA BACK-END E FRONT-END -->
+<div class="section-label"><span>Estrutura de Pastas</span></div>
+<div class="grid-main">
+
+  <!-- BACK-END -->
+  <div class="card">
+    <div class="card-header">
+      <div class="dot" style="background:var(--accent-green)"></div>
+      <h2>Back-end</h2>
+      <span class="badge">C# / .NET 8</span>
+    </div>
+    <div class="card-body">
+      <div class="tree">
+<span class="folder">GastosResidenciais/</span>
+<br>
+<span class="indent">├── </span><span class="folder">GastosResidenciais.API/</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">Controllers/</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file blue">PessoasController.cs</span><span class="comment">// CRUD de pessoas</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file blue">CategoriasController.cs</span><span class="comment">// criar + listar</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file blue">TransacoesController.cs</span><span class="comment">// criar + listar</span>
+<br>
+<span class="indent">│   │   └── </span><span class="file blue">RelatoriosController.cs</span><span class="comment">// totais por pessoa/cat.</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">DTOs/</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file orange">PessoaDto.cs</span><span class="comment">// request/response shapes</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file orange">CategoriaDto.cs</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file orange">TransacaoDto.cs</span>
+<br>
+<span class="indent">│   │   └── </span><span class="file orange">RelatorioDto.cs</span><span class="comment">// totais/saldos</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">Validators/</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file red">PessoaValidator.cs</span><span class="comment">// FluentValidation</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file red">CategoriaValidator.cs</span>
+<br>
+<span class="indent">│   │   └── </span><span class="file red">TransacaoValidator.cs</span><span class="comment">// regra menor de idade</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">Middleware/</span>
+<br>
+<span class="indent">│   │   └── </span><span class="file">ExceptionMiddleware.cs</span><span class="comment">// erros globais</span>
+<br>
+<span class="indent">│   ├── </span><span class="file">Program.cs</span><span class="comment">// DI, CORS, Swagger</span>
+<br>
+<span class="indent">│   └── </span><span class="file">appsettings.json</span><span class="comment">// connection string</span>
+<br><br>
+<span class="indent">├── </span><span class="folder">GastosResidenciais.Domain/</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">Entities/</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file purple">Pessoa.cs</span><span class="comment">// Id, Nome, Idade</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file purple">Categoria.cs</span><span class="comment">// Id, Descrição, Finalidade</span>
+<br>
+<span class="indent">│   │   └── </span><span class="file purple">Transacao.cs</span><span class="comment">// Id, Desc, Valor, Tipo...</span>
+<br>
+<span class="indent">│   └── </span><span class="folder">Enums/</span>
+<br>
+<span class="indent">│       ├── </span><span class="file">TipoTransacao.cs</span><span class="comment">// Despesa | Receita</span>
+<br>
+<span class="indent">│       └── </span><span class="file">FinalidadeCategoria.cs</span><span class="comment">// Despesa | Receita | Ambas</span>
+<br><br>
+<span class="indent">├── </span><span class="folder">GastosResidenciais.Application/</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">Interfaces/</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file">IPessoaService.cs</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file">ICategoriaService.cs</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file">ITransacaoService.cs</span>
+<br>
+<span class="indent">│   │   └── </span><span class="file">IRelatorioService.cs</span>
+<br>
+<span class="indent">│   └── </span><span class="folder">Services/</span>
+<br>
+<span class="indent">│       ├── </span><span class="file green">PessoaService.cs</span><span class="comment">// lógica de negócio</span>
+<br>
+<span class="indent">│       ├── </span><span class="file green">CategoriaService.cs</span>
+<br>
+<span class="indent">│       ├── </span><span class="file green">TransacaoService.cs</span><span class="comment">// valida menor de idade</span>
+<br>
+<span class="indent">│       └── </span><span class="file green">RelatorioService.cs</span><span class="comment">// agrega totais/saldos</span>
+<br><br>
+<span class="indent">└── </span><span class="folder">GastosResidenciais.Infrastructure/</span>
+<br>
+<span class="indent">    ├── </span><span class="folder">Data/</span>
+<br>
+<span class="indent">    │   ├── </span><span class="file">AppDbContext.cs</span><span class="comment">// EF Core DbContext</span>
+<br>
+<span class="indent">    │   └── </span><span class="folder">Migrations/</span><span class="comment">// geradas pelo EF</span>
+<br>
+<span class="indent">    ├── </span><span class="folder">Configurations/</span>
+<br>
+<span class="indent">    │   ├── </span><span class="file">PessoaConfiguration.cs</span><span class="comment">// mapeamento tabela</span>
+<br>
+<span class="indent">    │   ├── </span><span class="file">CategoriaConfiguration.cs</span>
+<br>
+<span class="indent">    │   └── </span><span class="file">TransacaoConfiguration.cs</span><span class="comment">// FK cascade</span>
+<br>
+<span class="indent">    └── </span><span class="folder">Repositories/</span>
+<br>
+<span class="indent">        ├── </span><span class="file">PessoaRepository.cs</span>
+<br>
+<span class="indent">        ├── </span><span class="file">CategoriaRepository.cs</span>
+<br>
+<span class="indent">        └── </span><span class="file">TransacaoRepository.cs</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FRONT-END -->
+  <div class="card">
+    <div class="card-header">
+      <div class="dot" style="background:var(--accent-blue)"></div>
+      <h2>Front-end</h2>
+      <span class="badge">React + TypeScript</span>
+    </div>
+    <div class="card-body">
+      <div class="tree">
+<span class="folder">gastos-frontend/</span>
+<br>
+<span class="indent">├── </span><span class="folder">src/</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">pages/</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="folder">Pessoas/</span>
+<br>
+<span class="indent">│   │   │   ├── </span><span class="file blue">PessoasPage.tsx</span><span class="comment">// listagem</span>
+<br>
+<span class="indent">│   │   │   ├── </span><span class="file blue">PessoaForm.tsx</span><span class="comment">// criar / editar</span>
+<br>
+<span class="indent">│   │   │   └── </span><span class="file blue">PessoaCard.tsx</span><span class="comment">// item da lista</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="folder">Categorias/</span>
+<br>
+<span class="indent">│   │   │   ├── </span><span class="file green">CategoriasPage.tsx</span>
+<br>
+<span class="indent">│   │   │   └── </span><span class="file green">CategoriaForm.tsx</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="folder">Transacoes/</span>
+<br>
+<span class="indent">│   │   │   ├── </span><span class="file orange">TransacoesPage.tsx</span>
+<br>
+<span class="indent">│   │   │   └── </span><span class="file orange">TransacaoForm.tsx</span><span class="comment">// filtra categorias</span>
+<br>
+<span class="indent">│   │   └── </span><span class="folder">Relatorios/</span>
+<br>
+<span class="indent">│   │       ├── </span><span class="file purple">RelatorioPessoasPage.tsx</span>
+<br>
+<span class="indent">│   │       └── </span><span class="file purple">RelatorioCategoriasPage.tsx</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">components/</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file">Layout/</span>
+<br>
+<span class="indent">│   │   │   ├── </span><span class="file">Sidebar.tsx</span><span class="comment">// nav lateral</span>
+<br>
+<span class="indent">│   │   │   └── </span><span class="file">AppLayout.tsx</span><span class="comment">// wrapper geral</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file">UI/</span>
+<br>
+<span class="indent">│   │   │   ├── </span><span class="file">Button.tsx</span>
+<br>
+<span class="indent">│   │   │   ├── </span><span class="file">Input.tsx</span>
+<br>
+<span class="indent">│   │   │   ├── </span><span class="file">Modal.tsx</span><span class="comment">// confirm delete</span>
+<br>
+<span class="indent">│   │   │   ├── </span><span class="file">Select.tsx</span>
+<br>
+<span class="indent">│   │   │   └── </span><span class="file">Table.tsx</span>
+<br>
+<span class="indent">│   │   └── </span><span class="file">Relatorio/</span>
+<br>
+<span class="indent">│   │       ├── </span><span class="file">TotaisTable.tsx</span><span class="comment">// tabela receita/despesa/saldo</span>
+<br>
+<span class="indent">│   │       └── </span><span class="file">TotaisGerais.tsx</span><span class="comment">// rodapé com totais</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">services/</span><span class="comment">// chamadas à API (Axios)</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file red">api.ts</span><span class="comment">// instância axios + baseURL</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file red">pessoaService.ts</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file red">categoriaService.ts</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file red">transacaoService.ts</span>
+<br>
+<span class="indent">│   │   └── </span><span class="file red">relatorioService.ts</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">types/</span><span class="comment">// interfaces TypeScript</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file">pessoa.types.ts</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file">categoria.types.ts</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file">transacao.types.ts</span>
+<br>
+<span class="indent">│   │   └── </span><span class="file">relatorio.types.ts</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">hooks/</span><span class="comment">// custom React hooks</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file">usePessoas.ts</span>
+<br>
+<span class="indent">│   │   ├── </span><span class="file">useCategorias.ts</span>
+<br>
+<span class="indent">│   │   └── </span><span class="file">useTransacoes.ts</span>
+<br>
+<span class="indent">│   ├── </span><span class="folder">router/</span>
+<br>
+<span class="indent">│   │   └── </span><span class="file">AppRouter.tsx</span><span class="comment">// React Router v6</span>
+<br>
+<span class="indent">│   ├── </span><span class="file">App.tsx</span>
+<br>
+<span class="indent">│   └── </span><span class="file">main.tsx</span><span class="comment">// entry point</span>
+<br>
+<span class="indent">├── </span><span class="file">index.html</span>
+<br>
+<span class="indent">├── </span><span class="file">vite.config.ts</span><span class="comment">// proxy → :5000</span>
+<br>
+<span class="indent">├── </span><span class="file">tsconfig.json</span>
+<br>
+<span class="indent">└── </span><span class="file">package.json</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENDPOINTS DA API -->
+<div class="section-label"><span>Endpoints da API REST</span></div>
+<div class="grid-bottom">
+
+  <div class="card">
+    <div class="card-header">
+      <div class="dot" style="background:var(--accent-blue)"></div>
+      <h2>Pessoas</h2>
+      <span class="badge">/api/pessoas</span>
+    </div>
+    <div class="card-body">
+      <table class="endpoint-table">
+        <tr><th>Método</th><th>Rota</th><th>Ação</th></tr>
+        <tr><td><span class="method get">GET</span></td><td>/api/pessoas</td><td>listar todas</td></tr>
+        <tr><td><span class="method get">GET</span></td><td>/api/pessoas/{id}</td><td>buscar por id</td></tr>
+        <tr><td><span class="method post">POST</span></td><td>/api/pessoas</td><td>criar pessoa</td></tr>
+        <tr><td><span class="method put">PUT</span></td><td>/api/pessoas/{id}</td><td>editar pessoa</td></tr>
+        <tr><td><span class="method delete">DELETE</span></td><td>/api/pessoas/{id}</td><td>deletar + transações</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="dot" style="background:var(--accent-green)"></div>
+      <h2>Categorias & Transações</h2>
+      <span class="badge">/api/...</span>
+    </div>
+    <div class="card-body">
+      <table class="endpoint-table">
+        <tr><th>Método</th><th>Rota</th><th>Ação</th></tr>
+        <tr><td><span class="method get">GET</span></td><td>/api/categorias</td><td>listar todas</td></tr>
+        <tr><td><span class="method post">POST</span></td><td>/api/categorias</td><td>criar categoria</td></tr>
+        <tr><td><span class="method get">GET</span></td><td>/api/transacoes</td><td>listar todas</td></tr>
+        <tr><td><span class="method post">POST</span></td><td>/api/transacoes</td><td>criar transação</td></tr>
+        <tr><td><span class="method get">GET</span></td><td>/api/categorias/{id}/validas</td><td>filtra por tipo</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="dot" style="background:var(--accent-purple)"></div>
+      <h2>Relatórios</h2>
+      <span class="badge">/api/relatorios</span>
+    </div>
+    <div class="card-body">
+      <table class="endpoint-table">
+        <tr><th>Método</th><th>Rota</th><th>Retorna</th></tr>
+        <tr><td><span class="method get">GET</span></td><td>/api/relatorios/pessoas</td><td>totais por pessoa + geral</td></tr>
+        <tr><td><span class="method get">GET</span></td><td>/api/relatorios/categorias</td><td>totais por categoria + geral</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ENTIDADES DO BANCO -->
+<div class="section-label"><span>Modelo de Dados</span></div>
+<div class="grid-full">
+  <div class="card">
+    <div class="card-header">
+      <div class="dot" style="background:var(--accent-yellow)"></div>
+      <h2>Entidades — SQLite</h2>
+      <span class="badge">EF Core Migrations</span>
+    </div>
+    <div class="card-body">
+      <div class="entity-grid">
+        <div class="entity-box">
+          <div class="entity-title" style="color:var(--accent-blue)">🧑 Pessoas</div>
+          <div class="entity-fields">
+            <div class="entity-field pk"><span class="fname">Id</span><span class="ftype">GUID PK</span></div>
+            <div class="entity-field"><span class="fname">Nome</span><span class="ftype">TEXT(200) NOT NULL</span></div>
+            <div class="entity-field"><span class="fname">Idade</span><span class="ftype">INTEGER NOT NULL</span></div>
+          </div>
+        </div>
+        <div class="entity-box">
+          <div class="entity-title" style="color:var(--accent-green)">🏷️ Categorias</div>
+          <div class="entity-fields">
+            <div class="entity-field pk"><span class="fname">Id</span><span class="ftype">GUID PK</span></div>
+            <div class="entity-field"><span class="fname">Descricao</span><span class="ftype">TEXT(400) NOT NULL</span></div>
+            <div class="entity-field"><span class="fname">Finalidade</span><span class="ftype">ENUM (0/1/2)</span></div>
+          </div>
+        </div>
+        <div class="entity-box">
+          <div class="entity-title" style="color:var(--accent-orange)">💸 Transacoes</div>
+          <div class="entity-fields">
+            <div class="entity-field pk"><span class="fname">Id</span><span class="ftype">GUID PK</span></div>
+            <div class="entity-field"><span class="fname">Descricao</span><span class="ftype">TEXT(400) NOT NULL</span></div>
+            <div class="entity-field"><span class="fname">Valor</span><span class="ftype">DECIMAL > 0</span></div>
+            <div class="entity-field"><span class="fname">Tipo</span><span class="ftype">ENUM (0/1)</span></div>
+            <div class="entity-field fk"><span class="fname">CategoriaId</span><span class="ftype">FK → Categorias</span></div>
+            <div class="entity-field fk"><span class="fname">PessoaId</span><span class="ftype">FK → Pessoas CASCADE</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REGRAS DE NEGÓCIO -->
+<div class="section-label"><span>Regras de Negócio</span></div>
+<div class="grid-main">
+
+  <div class="card">
+    <div class="card-header">
+      <div class="dot" style="background:var(--accent-orange)"></div>
+      <h2>Validações Críticas</h2>
+    </div>
+    <div class="card-body">
+      <div class="rule-list">
+        <div class="rule-item warn">
+          <div class="rule-icon">🚸</div>
+          <div class="rule-text"><strong>Menor de Idade (&lt;18):</strong> apenas transações do tipo <strong>Despesa</strong> são aceitas. Receitas são bloqueadas na camada de serviço.</div>
+        </div>
+        <div class="rule-item error">
+          <div class="rule-icon">🗑️</div>
+          <div class="rule-text"><strong>Deleção em Cascata:</strong> ao deletar uma Pessoa, todas as suas Transações são removidas automaticamente via FK CASCADE no EF Core.</div>
+        </div>
+        <div class="rule-item info">
+          <div class="rule-icon">🏷️</div>
+          <div class="rule-text"><strong>Categoria × Tipo:</strong> ao criar uma transação de tipo <em>Despesa</em>, apenas categorias com finalidade <em>Despesa</em> ou <em>Ambas</em> são aceitas. O mesmo vale para Receita.</div>
+        </div>
+        <div class="rule-item ok">
+          <div class="rule-icon">✅</div>
+          <div class="rule-text"><strong>Valor Positivo:</strong> o campo Valor da transação deve ser um número maior que zero, validado via FluentValidation.</div>
+        </div>
+        <div class="rule-item ok">
+          <div class="rule-icon">📏</div>
+          <div class="rule-text"><strong>Tamanho dos campos:</strong> Nome da pessoa máx. 200 chars. Descrição de Categoria e Transação máx. 400 chars.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="dot" style="background:var(--accent-purple)"></div>
+      <h2>Padrões de Desenvolvimento</h2>
+    </div>
+    <div class="card-body">
+      <div class="rule-list">
+        <div class="rule-item info">
+          <div class="rule-icon">🏛️</div>
+          <div class="rule-text"><strong>Clean Architecture:</strong> separação em 4 projetos: API, Domain, Application, Infrastructure. Dependências apontam sempre para dentro (Domain).</div>
+        </div>
+        <div class="rule-item info">
+          <div class="rule-icon">🔄</div>
+          <div class="rule-text"><strong>Repository Pattern:</strong> acesso ao banco abstraído em interfaces, facilitando testes e troca de provedor.</div>
+        </div>
+        <div class="rule-item info">
+          <div class="rule-icon">📦</div>
+          <div class="rule-text"><strong>DTOs:</strong> a API nunca expõe entidades do domínio diretamente — usa objetos de transferência mapeados com AutoMapper ou manualmente.</div>
+        </div>
+        <div class="rule-item ok">
+          <div class="rule-icon">🔗</div>
+          <div class="rule-text"><strong>CORS configurado:</strong> a API permite requisições do front-end (localhost:5173) em desenvolvimento.</div>
+        </div>
+        <div class="rule-item ok">
+          <div class="rule-icon">📖</div>
+          <div class="rule-text"><strong>Swagger habilitado:</strong> documentação interativa dos endpoints disponível em <code>/swagger</code> no ambiente de dev.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDEM DE IMPLEMENTAÇÃO -->
+<div class="section-label"><span>Ordem Sugerida de Implementação</span></div>
+<div class="grid-full">
+  <div class="card">
+    <div class="card-header">
+      <div class="dot" style="background:var(--accent-green)"></div>
+      <h2>Sequência de Desenvolvimento</h2>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <div class="flow-box" style="border-color:#4f9cf950;color:var(--accent-blue)">1 · Domain<br><span style="font-size:10px;color:var(--text-muted)">Entities + Enums</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box" style="border-color:#3ecf8e50;color:var(--accent-green)">2 · Infrastructure<br><span style="font-size:10px;color:var(--text-muted)">DbContext + Migrations</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box" style="border-color:#a78bfa50;color:var(--accent-purple)">3 · Application<br><span style="font-size:10px;color:var(--text-muted)">Services + Interfaces</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box" style="border-color:#f9731650;color:var(--accent-orange)">4 · API<br><span style="font-size:10px;color:var(--text-muted)">Controllers + DTOs</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box" style="border-color:#f8717150;color:var(--accent-red)">5 · Front-end<br><span style="font-size:10px;color:var(--text-muted)">React + services/</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box" style="border-color:#fbbf2450;color:var(--accent-yellow)">6 · Relatórios<br><span style="font-size:10px;color:var(--text-muted)">totais + saldos</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:40px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">
+  Controle de Gastos Residenciais &nbsp;·&nbsp; Arquitetura v1.0
+</div>
+
+</body>
+</html>

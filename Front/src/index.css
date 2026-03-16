@@ -1,0 +1,82 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Design System — Gastos Residenciais
+   Estética: editorial financeiro — clean, tipografia forte, toques de cor
+   Fontes: DM Serif Display (títulos) + DM Sans (corpo)
+───────────────────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Paleta */
+  --bg:          #F7F5F0;   /* creme suave — fundo geral */
+  --surface:     #FFFFFF;   /* branco — cards e painéis */
+  --border:      #E8E4DC;   /* borda sutil */
+  --border-dark: #C8C2B8;
+
+  --ink:         #1A1714;   /* quase-preto — texto principal */
+  --ink-2:       #5C5650;   /* cinza médio — texto secundário */
+  --ink-3:       #9C948A;   /* cinza claro — placeholders */
+
+  --green:       #1A7A5E;   /* receita */
+  --green-bg:    #EAF5F1;
+  --red:         #C0392B;   /* despesa */
+  --red-bg:      #FBEAE8;
+  --amber:       #B45309;   /* aviso */
+  --amber-bg:    #FEF3C7;
+  --blue:        #1D4ED8;   /* ação primária */
+  --blue-light:  #EFF6FF;
+
+  /* Tipografia */
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+
+  /* Espaçamento */
+  --radius:    8px;
+  --radius-lg: 14px;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.06);
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 3px; }
+
+/* ── Utilitários de texto ── */
+.font-display { font-family: var(--font-display); }
+.text-green    { color: var(--green); }
+.text-red      { color: var(--red); }
+.text-muted    { color: var(--ink-2); }
+
+/* ── Animações de entrada ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-fade-up { animation: fadeUp 0.35s ease both; }
+.animate-fade-in { animation: fadeIn 0.25s ease both; }
+
+/* stagger */
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger > *:nth-child(4) { animation-delay: 0.20s; }
+.stagger > *:nth-child(5) { animation-delay: 0.25s; }

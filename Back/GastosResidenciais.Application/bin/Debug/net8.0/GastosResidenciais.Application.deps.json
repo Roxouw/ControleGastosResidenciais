@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "GastosResidenciais.Application/1.0.0": {
+        "dependencies": {
+          "GastosResidenciais.Domain": "1.0.0"
+        },
+        "runtime": {
+          "GastosResidenciais.Application.dll": {}
+        }
+      },
+      "GastosResidenciais.Domain/1.0.0": {
+        "runtime": {
+          "GastosResidenciais.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "GastosResidenciais.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GastosResidenciais.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
